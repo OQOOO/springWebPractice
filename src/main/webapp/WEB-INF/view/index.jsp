@@ -16,7 +16,7 @@
 			text-align:center;
 			width: 100%;
 			height: 100px;
-			background: powderblue;
+			background: skyblue;
 		}
 		header h1{margin:0px;}
 		
@@ -32,7 +32,7 @@
 		footer {
 			witdh: 100%;
 			height: 100px;
-			background-color: powderblue;
+			background-color: skyblue;
 			text-align: center;
 		}
 		#infoTypeBox {
@@ -74,7 +74,7 @@
 </head>
 <body>
 	<header>
-		<h1>Lim Board</h1>
+		<h1>Board</h1>
 	</header>
 	
 	<div id="mainContainer">

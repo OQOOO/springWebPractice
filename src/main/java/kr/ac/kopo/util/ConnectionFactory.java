@@ -8,22 +8,19 @@ public class ConnectionFactory {
 	public Connection getConnection() throws Exception {
 		
 		Connection conn = null;
+			
+		Class.forName("oracle.jdbc.driver.OracleDriver");
 		
-//		try {
-			
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			
-			String url = "jdbc:oracle:thin:@localhost:1521:xe";
-			String user = "hr";
-			String password = "hr";
-			
-			conn = DriverManager.getConnection(url, user, password);
-			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		String url = "jdbc:oracle:thin:@localhost:1521:xe";
+		String user = "hr";
+		String password = "hr";
+		
+		conn = DriverManager.getConnection(url, user, password);
+		
+		//org.springframework.jdbc.datasource.DriverManagerDataSource
 		
 		return conn;
+		
 	}
-	
+
 }

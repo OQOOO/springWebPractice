@@ -2,27 +2,44 @@ package kr.ac.kopo.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.ac.kopo.dao.BoardDAO;
 import kr.ac.kopo.vo.BoardVO;
 
-public class IndexController implements Controller {
-	@Override
-	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		BoardDAO dao = new BoardDAO();
-		ModelAndView mv = new ModelAndView();
-		
+@Controller
+public class IndexController {
+	
+	@Autowired
+	BoardDAO dao;
+	
+	@RequestMapping("/index")
+	public String index(Model model) {
 		List<BoardVO> postList = dao.boardView();
 		
-		mv.addObject("postList", postList);
+		model.addAttribute("postList", postList);
+		return "index";
 		
-		mv.setViewName("index");
-
-		return mv;
 	}
+	
+	@RequestMapping("/aaa")
+	public String testIndex(Model model) {
+		
+		List<BoardVO> list = dao.springBoardView();
+		
+		model.addAttribute("postList", list);
+		
+		System.out.println("template test");
+		return "index";
+	}
+	
+	@RequestMapping("image")
+	public String quasar(Model model) {
+		
+		return "index";
+	}
+
 }

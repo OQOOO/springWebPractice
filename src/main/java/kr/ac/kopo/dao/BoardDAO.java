@@ -6,11 +6,23 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.ac.kopo.util.ConnectionFactory;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import kr.ac.kopo.vo.BoardVO;
 
 public class BoardDAO {
 	
+	@Autowired
+	private DataSource dataSource;
+	
+//	public void setDataSource(DataSource dataSource) {
+//		this.dataSource = dataSource;
+//	}
+
 	public void insertBoard(BoardVO vo) {
 
 		StringBuilder sql = new StringBuilder();
@@ -18,7 +30,8 @@ public class BoardDAO {
 		sql.append("VALUES((SELECT NVL(MAX(POST_ID),0)+1 FROM QUERY_BOARD), ?, ?, ?, 0) ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+//			Connection conn = new ConnectionFactory().getConnection();
+			Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 		){
 			pstmt.setString(1, vo.getUserId());
@@ -30,57 +43,33 @@ public class BoardDAO {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	//
+	
+	public List<BoardVO> springBoardView() {
+		String sql = "SELECT * FROM QUERY_BOARD ORDER BY POST_ID DESC ";
+		
+		JdbcTemplate template = new JdbcTemplate();
+		template.setDataSource(dataSource);
+		List<BoardVO> list = template.query(sql, new BeanPropertyRowMapper(BoardVO.class));
+		
+		return list;
 		
 	}
-//	public void updateBoard(BoardVO vo) {
-//		
-//		StringBuilder sql = new StringBuilder();
-//		sql.append("update user_board set title=?, content=?, updated_at = TO_CHAR(SYSTIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') ");
-//		sql.append("where seq = ? ");
-//		
-//		try (
-//				Connection conn = new ConnectionFactory().getConnection();
-//				PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-//				){
-//			pstmt.setString(1, vo.getTitle());
-//			pstmt.setString(2, vo.getContent());
-//			pstmt.setInt(3, vo.getSeq());
-//			pstmt.executeUpdate();
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		
-//	}
-//	public void addViews(int seq) {
-//		
-//		StringBuilder sql = new StringBuilder();
-//		sql.append("update user_board set views = views + 1 ");
-//		sql.append("where seq = ? ");
-//		
-//		try (
-//				Connection conn = new ConnectionFactory().getConnection();
-//				PreparedStatement pstmt = conn.prepareStatement(sql.toString());
-//				){
-//			pstmt.setInt(1, seq);
-//			pstmt.executeUpdate();
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		
-//	}
-//	
+	
+	
+	//
+
 	public List<BoardVO> boardView() {
+
 		List<BoardVO> postList = new ArrayList<>();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT * FROM QUERY_BOARD ORDER BY POST_ID DESC ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
-			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+				Connection conn = dataSource.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			) {
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
@@ -112,7 +101,7 @@ public class BoardDAO {
 		sql.append("SELECT * FROM QUERY_BOARD WHERE POST_ID = ? ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			){
 			pstmt.setInt(1, postId);
@@ -142,7 +131,7 @@ public class BoardDAO {
 		sql.append("DELETE FROM QUERY_BOARD WHERE POST_ID = ? ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			){
 			pstmt.setInt(1, postId);
@@ -162,7 +151,7 @@ public class BoardDAO {
 		sql.append("VALUES((SELECT NVL(MAX(COMMENT_ID),0)+1 FROM POST_COMMENT), ?, ?, ?) ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 		){
 			pstmt.setInt(1, vo.getPostId());
@@ -183,7 +172,7 @@ public class BoardDAO {
 		sql.append("ORDER BY COMMENT_ID ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			) {
 			
@@ -216,7 +205,7 @@ public class BoardDAO {
 		sql.append("DELETE POST_COMMENT WHERE COMMENT_ID = ? ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			){
 			pstmt.setInt(1, cid);
@@ -230,7 +219,7 @@ public class BoardDAO {
 		sql2.append("DELETE COMMENT_REPLY WHERE COMMENT_ID = ? ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql2.toString());
 			){
 			pstmt.setInt(1, cid);
@@ -248,7 +237,7 @@ public class BoardDAO {
 		sql.append("VALUES((SELECT NVL(MAX(COMMENT_REPLY_ID),0)+1 FROM COMMENT_REPLY), ?, ?, ?, ?, ?) ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 		){
 			pstmt.setInt(1, vo.getCommentId());
@@ -291,7 +280,7 @@ public class BoardDAO {
 		sql.append("WHERE POST_ID = ? ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			) {
 			
@@ -330,7 +319,7 @@ public class BoardDAO {
 		sql.append("DELETE COMMENT_REPLY WHERE COMMENT_REPLY_ID = ? ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 		){
 			pstmt.setInt(1, reId);
@@ -347,7 +336,7 @@ public class BoardDAO {
 		sql.append("UPDATE QUERY_BOARD SET VIEWS = VIEWS + 1 WHERE POST_ID = ? ");
 		
 		try (
-			Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 			){
 			pstmt.setInt(1, postId);
@@ -367,7 +356,7 @@ public class BoardDAO {
 		sql.append("WHERE POST_ID = ? ");
 		
 		try (
-				Connection conn = new ConnectionFactory().getConnection();
+				Connection conn = dataSource.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString());
 				){
 			pstmt.setString(1, vo.getTitle());

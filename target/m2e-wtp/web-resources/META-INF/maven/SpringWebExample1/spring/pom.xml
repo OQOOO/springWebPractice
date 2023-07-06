@@ -5,7 +5,7 @@
   <version>0.0.1-SNAPSHOT</version>
     <dependencies>
     
-  	<!-- 스프링 -->
+  	<!-- s p r i n g -->
   	
 	<dependency>
 	    <groupId>org.springframework</groupId>
@@ -28,6 +28,14 @@
     	<artifactId>ojdbc8</artifactId>
     	<version>19.8.0.0</version>
   	</dependency>
+  	
+	<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+	<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-jdbc</artifactId>
+	    <version>5.2.9.RELEASE</version>
+	</dependency>
+
   	
   	
   </dependencies>
